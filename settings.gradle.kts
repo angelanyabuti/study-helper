@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "study_helper"
 include(":app")
- 

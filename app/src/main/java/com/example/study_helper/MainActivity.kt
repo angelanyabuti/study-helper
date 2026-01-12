@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,8 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,13 +29,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.study_helper.flashcards.FlashcardScreen
 import com.example.study_helper.ui.theme.Study_helperTheme
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Icon
-import androidx.compose.ui.draw.shadow
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
 
 
 class MainActivity : ComponentActivity() {
@@ -42,10 +47,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Study_helperTheme {
+                val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    NavHost(navController = navController, startDestination = "home") {
+                        composable("home") {
+                            Greeting(
+                                modifier = Modifier.padding(innerPadding),
+                                navController = navController
+                            )
+                        }
+                        composable("flashcards") {
+                            FlashcardScreen()
+                        }
+                    }
                 }
             }
         }
@@ -54,7 +68,14 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
+fun GreetingPreview() {
+    Study_helperTheme {
+        Greeting(navController = rememberNavController())
+    }
+}
+
+@Composable
+fun Greeting(modifier: Modifier = Modifier, navController: NavController) {
     Column(modifier = modifier.fillMaxWidth()) {
 
         // Header Box
@@ -87,7 +108,13 @@ fun Greeting(modifier: Modifier = Modifier) {
                                 .size(120.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(MaterialTheme.colorScheme.secondary)
-                                .clickable { /* open flashcards for this subject */ },
+                                .clickable(
+                                    indication = LocalIndication.current,
+                                    interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+                                ) {
+                                    navController.navigate("flashcards")
+                                }
+                            ,
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -130,7 +157,13 @@ fun Greeting(modifier: Modifier = Modifier) {
                     .height(60.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.secondary)
-                    .clickable { /* Start flashcards */ },
+                    .clickable(
+                        indication = LocalIndication.current,
+                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+                    ) {
+                        navController.navigate("flashcards")
+                    }
+                ,
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -143,8 +176,8 @@ fun Greeting(modifier: Modifier = Modifier) {
                     .weight(1f)
                     .height(60.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .clickable { /* Start quiz */ },
+                    .background(MaterialTheme.colorScheme.secondary),
+                    //.clickable { /* Start quiz */ },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
