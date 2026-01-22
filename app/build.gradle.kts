@@ -8,6 +8,7 @@ android {
     namespace = "com.example.study_helper"
     compileSdk = 36
 
+
     defaultConfig {
         applicationId = "com.example.study_helper"
         minSdk = 24
@@ -19,6 +20,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            "String",
+            "API_KEY",
+            "\"${project.properties["API_KEY"]}\""
+        )
     }
 
     buildTypes {
@@ -40,6 +47,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -59,8 +67,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("androidx.navigation:navigation-compose:2.9.6")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
