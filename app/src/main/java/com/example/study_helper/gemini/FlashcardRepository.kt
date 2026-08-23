@@ -12,7 +12,13 @@ class FlashcardRepository(
 ) {
 
     suspend fun getFlashcards(topic: String): List<Flashcard> {
-        val json = service.generateFlashcards(topic)
-        return parser.parse(json)
+        try {
+            val json = service.generateFlashcards(topic)
+            println("Raw JSON from service: $json")  // Debug log
+            return parser.parse(json)
+        } catch (e: Exception) {
+            e.printStackTrace()  // Shows full error in Logcat
+            throw e  // Re-throw to be caught by ViewModel
+        }
     }
 }

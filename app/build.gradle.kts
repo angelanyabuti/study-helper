@@ -1,8 +1,14 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.compose)
+    id ("com.google.secrets_gradle_plugin") version "0.4" apply false
 }
+
+val localProperties = gradleLocalProperties(rootProject.projectDir, project.providers)
+val myApiKey = localProperties.getProperty("API_KEY") ?: ""
 
 android {
     namespace = "com.example.study_helper"
@@ -21,11 +27,7 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField(
-            "String",
-            "API_KEY",
-            "\"${project.properties["API_KEY"]}\""
-        )
+        buildConfigField("String", "API_KEY", "\"$myApiKey\"")
     }
 
     buildTypes {
@@ -66,6 +68,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.navigation:navigation-compose:2.9.6")
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation("com.google.ai.client.generativeai:generativeai:0.6.0")

@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 sealed interface FlashcardUiState {
     object Initial : FlashcardUiState
     object Loading : FlashcardUiState
-    data class Success(val flashcards: List<Flashcard>) : FlashcardUiState
+    data class Success(val topic: String, val flashcards: List<Flashcard>) : FlashcardUiState
     data class Error(val message: String) : FlashcardUiState
 }
 
@@ -32,6 +32,10 @@ class FlashcardViewModel(
     // Public read-only state
     val uiState: StateFlow<FlashcardUiState> = _uiState.asStateFlow()
 
+    fun resetToInitial() {
+        _uiState.value = FlashcardUiState.Initial
+    }
+
     fun generateFlashcards(topic: String) {
         //tells the app to do this task in the background
         viewModelScope.launch {
@@ -39,7 +43,7 @@ class FlashcardViewModel(
 
             try {
                 val flashcards = repository.getFlashcards(topic)
-                _uiState.value = FlashcardUiState.Success(flashcards)
+                _uiState.value = FlashcardUiState.Success(topic, flashcards)
             } catch (e: Exception) {
                 _uiState.value = FlashcardUiState.Error(
                     e.localizedMessage ?: "Failed to generate flashcards"
