@@ -3,19 +3,19 @@
   <table>
     <tr>
       <td align="center">
-        <a target="_blank" rel="noopener noreferrer" href="/screenshots/screenshot 2-portrait.png"><img src="/screenshots/screenshot 2-portrait.png" alt="Screenshot"></a>
+        <a target="_blank" rel="noopener noreferrer" href="/screenshots/home.png"><img src="/screenshots/home.png" alt="Screenshot"></a>
         <br/>
         <sub> Home Screen</sub>
       </td>
       <td align="center">
-        <a target="_blank" rel="noopener noreferrer" href="/screenshots/screenshot 1-portrait.png"><img src="/screenshots/screenshot 1-portrait.png" alt="Screenshot"></a>
+        <a target="_blank" rel="noopener noreferrer" href="/screenshots/input.png"><img src="/screenshots/input.png" alt="Screenshot"></a>
         <br/>
-        <sub> Search</sub>
+        <sub> Input Screen</sub>
       </td>
       <td align="center">
-        <a target="_blank" rel="noopener noreferrer" href="/screenshots/screenshot 3-portrait.png"><img src="/screenshots/screenshot 3-portrait.png" alt="Screenshot"></a>
+        <a target="_blank" rel="noopener noreferrer" href="/screenshots/flashcard.png"><img src="/screenshots/flashcard.png" alt="Screenshot"></a>
         <br/>
-        <sub> Now Playing</sub>
+        <sub> Flashcard </sub>
       </td>
     </tr>
   </table>
