@@ -36,13 +36,13 @@ class FlashcardViewModel(
         _uiState.value = FlashcardUiState.Initial
     }
 
-    fun generateFlashcards(topic: String) {
+    fun generateFlashcards(topic: String, count: Int = 20, difficulty: String = "Beginner") {
         //tells the app to do this task in the background
         viewModelScope.launch {
             _uiState.value = FlashcardUiState.Loading
 
             try {
-                val flashcards = repository.getFlashcards(topic)
+                val flashcards = repository.getFlashcards(topic, count, difficulty)
                 _uiState.value = FlashcardUiState.Success(topic, flashcards)
             } catch (e: Exception) {
                 _uiState.value = FlashcardUiState.Error(

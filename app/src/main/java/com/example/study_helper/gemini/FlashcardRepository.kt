@@ -11,9 +11,9 @@ class FlashcardRepository(
     private val parser: FlashcardParser = FlashcardParser()
 ) {
 
-    suspend fun getFlashcards(topic: String): List<Flashcard> {
+    suspend fun getFlashcards(topic: String, count: Int = 5, difficulty: String = "Beginner"): List<Flashcard> {
         try {
-            val json = service.generateFlashcards(topic)
+            val json = service.generateFlashcards(topic, count, difficulty)
             println("Raw JSON from service: $json")  // Debug log
             return parser.parse(json)
         } catch (e: Exception) {
