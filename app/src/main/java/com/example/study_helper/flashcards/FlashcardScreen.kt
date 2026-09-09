@@ -1,5 +1,6 @@
 package com.example.study_helper.flashcards
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -71,12 +72,15 @@ import com.example.study_helper.ui.theme.WarningAmber
 fun FlashcardScreen(
     navController: NavController,
     viewModel: FlashcardViewModel,
+    onStudySession: () -> Unit = {},
     onBack: () -> Unit = {
         viewModel.resetToInitial()
         navController.popBackStack()
     }
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    BackHandler(onBack = onBack)
 
     Box(
         modifier = Modifier
@@ -89,10 +93,11 @@ fun FlashcardScreen(
                 CircularProgressIndicator(color = AccentBlue)
             }
             is FlashcardUiState.Success -> {
+                LaunchedEffect(Unit) { onStudySession() }
                 FlashcardContent(
-                    navController = navController,
                     topic = state.topic,
-                    flashcards = state.flashcards
+                    flashcards = state.flashcards,
+                    onBack = onBack
                 )
             }
             is FlashcardUiState.Error -> {
@@ -111,9 +116,9 @@ fun FlashcardScreen(
 
 @Composable
 fun FlashcardContent(
-    navController: NavController,
     topic: String,
-    flashcards: List<Flashcard>
+    flashcards: List<Flashcard>,
+    onBack: () -> Unit
 ) {
     var cards by remember(flashcards) { mutableStateOf(flashcards) }
     var currentCardIndex by remember { mutableIntStateOf(0) }
@@ -142,7 +147,7 @@ fun FlashcardContent(
             IconCircleButton(
                 icon = Icons.Default.ArrowBack,
                 contentDescription = "Back",
-                onClick = { navController.popBackStack() }
+                onClick = onBack
             )
             Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {

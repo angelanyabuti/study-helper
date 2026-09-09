@@ -53,7 +53,9 @@ fun InputScreen(
 
     LaunchedEffect(uiState) {
         if (uiState is FlashcardUiState.Success) {
-            navController.navigate("flashcards")
+            navController.navigate("flashcards") {
+                popUpTo("input") { inclusive = true }
+            }
         }
     }
 
@@ -61,8 +63,8 @@ fun InputScreen(
 
         when (uiState) {
 
-            // ── Loading ─────────────────────────────────────────────────────
-            is FlashcardUiState.Loading -> {
+            // ── Loading / Success (navigating away) ────────────────────────
+            is FlashcardUiState.Loading, is FlashcardUiState.Success -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -94,7 +96,7 @@ fun InputScreen(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                     Button(
-                        onClick = { viewModel.generateFlashcards(topic) },
+                        onClick = { viewModel.generateFlashcards(topic, selectedCount, selectedDiff) },
                         colors = ButtonDefaults.buttonColors(containerColor = AccentBlue)
                     ) {
                         Text("Retry", color = Color.White)
@@ -336,7 +338,7 @@ fun InputScreen(
                                 if (topic.isBlank()) {
                                     showTopicError = true
                                 } else {
-                                    viewModel.generateFlashcards(topic)
+                                    viewModel.generateFlashcards(topic, selectedCount, selectedDiff)
                                 }
                             },
                             modifier = Modifier

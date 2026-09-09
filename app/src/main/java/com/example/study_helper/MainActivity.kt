@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +52,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.study_helper.flashcards.FlashcardScreen
 import com.example.study_helper.gemini.FlashcardViewModel
 import com.example.study_helper.pages.InputScreen
+import com.example.study_helper.pages.SplashScreen
+import com.example.study_helper.streak.StreakViewModel
 import com.example.study_helper.ui.theme.AccentBlue
 import com.example.study_helper.ui.theme.AccentBlueBorder
 import com.example.study_helper.ui.theme.BackgroundDark
@@ -64,20 +69,33 @@ import com.example.study_helper.ui.theme.TextSecondary
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             Study_helperTheme {
                 val navController = rememberNavController()
-                // Create the ViewModel here, so it's shared between the screens.
+                // Create the ViewModels here, so they're shared between the screens.
                 val flashcardViewModel: FlashcardViewModel = viewModel()
+                val streakViewModel: StreakViewModel = viewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavHost(navController = navController, startDestination = "home") {
+                    NavHost(navController = navController, startDestination = "splash") {
+                        composable("splash") {
+                            SplashScreen(
+                                onFinished = {
+                                    navController.navigate("home") {
+                                        popUpTo("splash") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
                         composable("home") {
+                            val streakCount by streakViewModel.streakCount.collectAsState()
                             Greeting(
                                 modifier = Modifier.padding(innerPadding),
-                                navController = navController
+                                navController = navController,
+                                streakCount = streakCount
                             )
                         }
                         composable("input") {
@@ -89,7 +107,8 @@ class MainActivity : ComponentActivity() {
                         composable("flashcards") {
                             FlashcardScreen(
                                 navController = navController,
-                                viewModel = flashcardViewModel
+                                viewModel = flashcardViewModel,
+                                onStudySession = { streakViewModel.recordStudySession() }
                             )
                         }
                     }
@@ -134,7 +153,7 @@ private val studyModes = listOf(
 )
 
 @Composable
-fun Greeting(modifier: Modifier = Modifier, navController: NavController) {
+fun Greeting(modifier: Modifier = Modifier, navController: NavController, streakCount: Int = 0) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -224,7 +243,7 @@ fun Greeting(modifier: Modifier = Modifier, navController: NavController) {
             Spacer(Modifier.width(12.dp))
             Column {
                 Text(
-                    "3-day streak",
+                    "$streakCount-day streak",
                     color = SuccessGreen,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold
