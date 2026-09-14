@@ -1,4 +1,16 @@
-# study-helper
+# study Helper
+**Study Helper** is an Android app that uses the Gemini API to generate flashcards from topics provided by the user. Users can enter a topic, select the number of flashcards to be generated, and select the difficulty level to tailor the learning experience to their needs. It uses local storage to track and maintain users' study streaks. <br>
+##  Tech Stack
+
+- **Language**: Kotlin
+- **UI Toolkit**: Jetpack Compose
+- **Architecture**: MVVM
+- **State Management**: ViewModel, LiveData
+- **API** - Google Gemini API
+- Storage - Local Storage (Shared Preferences) <em>For the study streaks<em/>
+  
+##  Screenshots
+
 <p align="center">
   <table>
     <tr>
